@@ -1,0 +1,41 @@
+name: Build IPA for TrollStore
+
+on:
+  push:
+    branches:
+      - main # شغّل العملية عند دفع تغييرات إلى الفرع الرئيسي
+  workflow_dispatch: # يتيح تشغيل العملية يدويًا
+
+jobs:
+  build:
+    runs-on: macos-latest # تشغيل على macOS
+
+    steps:
+      # 1. سحب الكود من المستودع
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. إعداد Ruby وFastlane
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0' # أو أي إصدار متوافق
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      # 3. تثبيت الأدوات (إذا كنت تستخدم CocoaPods)
+      - name: Install dependencies
+        run: |
+          pod install || true # تخطي الخطوة إذا لم يكن المشروع يستخدم CocoaPods
+
+      # 4. تشغيل Fastlane لبناء ملف IPA
+      - name: Build IPA
+        run: fastlane build_ipa_trollstore
+
+      # 5. رفع ملف IPA كـ Artifact
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        with:
+          name: TrollStore-IPA
+          path: ./build/MyApp-TrollStore.ipa # تأكد من أن المسار صحيح
