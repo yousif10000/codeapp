@@ -1,7 +1,7 @@
 name: Build CodeApp IPA for TrollStore
 
 on: 
-  workflow_dispatch: # يسمح بتشغيله يدويًا من GitHub Actions
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,11 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: true # استنساخ المستودعات الفرعية إن وجدت
-          fetch-depth: 0   # يجلب كل الملفات بدون قيود
+          submodules: true
+          fetch-depth: 0
 
       - name: List Project Files
         run: ls -R
+
+      - name: List Available Schemes
+        run: xcodebuild -list
 
       - name: Set up Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
@@ -34,14 +37,14 @@ jobs:
         run: |
           xcodebuild clean build \
             -project Code.xcodeproj \
-            -scheme "Code" \
+            -scheme "Code App" \
             -destination generic/platform=iOS \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO DEVELOPMENT_TEAM=""
 
       - name: Package IPA
         run: |
           mkdir -p Payload
-          cp -r build/Release-iphoneos/Code.app Payload/CodeApp.app
+          cp -r build/Release-iphoneos/*.app Payload/CodeApp.app
           zip -r CodeApp.ipa Payload
 
       - name: Upload IPA
