@@ -1,40 +1,10 @@
-name: Build CodeApp IPA for TrollStore
+ - name: List Available Schemes
+   run: xcodebuild -list
 
-on: 
-  workflow_dispatch: # يسمح بتشغيله يدويًا من GitHub Actions
-
-jobs:
-  build:
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-
-      - name: Install dependencies
-        run: |
-          brew install ldid
-          sudo gem install fastlane
-
-      - name: Build IPA
-        run: |
-          xcodebuild clean build \
-            -scheme CodeApp \
-            -destination generic/platform=iOS \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-
-      - name: Package IPA
-        run: |
-          mkdir -p Payload
-          cp -r build/Release-iphoneos/CodeApp.app Payload/
-          zip -r CodeApp.ipa Payload
-
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: CodeApp-IPA
-          path: CodeApp.ipa
-          compression-level: 0 # يحسن سرعة التحميل
+ - name: Build IPA
+   run: |
+     xcodebuild clean build \
+       -workspace Code.xcworkspace \
+       -scheme "Code" \
+       -destination generic/platform=iOS \
+       CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
