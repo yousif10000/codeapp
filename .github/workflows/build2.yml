@@ -43,10 +43,15 @@ jobs:
             -destination generic/platform=iOS \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO DEVELOPMENT_TEAM=""
 
-      - name: Package IPA
+      - name: List Build Directory
+        run: ls -R build
+
+      - name: Find and Package IPA
         run: |
           mkdir -p Payload
-          cp -r build/Release-iphoneos/*.app Payload/CodeApp.app
+          APP_PATH=$(find build -name "*.app" | head -n 1)
+          echo "Found app at: $APP_PATH"
+          cp -r "$APP_PATH" Payload/CodeApp.app
           zip -r CodeApp.ipa Payload
 
       - name: Upload IPA
