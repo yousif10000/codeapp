@@ -16,14 +16,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
           fetch-depth: 0
 
       - name: List Project Files
         run: ls -R
 
-      - name: List Available Schemes
-        run: xcodebuild -list
+      - name: Download missing frameworks
+        run: |
+          chmod +x downloadFrameworks.sh
+          ./downloadFrameworks.sh
 
       - name: Set up Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
