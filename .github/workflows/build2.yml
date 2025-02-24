@@ -1,10 +1,18 @@
- - name: List Available Schemes
-   run: xcodebuild -list
+name: Build IPA
 
- - name: Build IPA
-   run: |
-     xcodebuild clean build \
-       -workspace Code.xcworkspace \
-       -scheme "Code" \
-       -destination generic/platform=iOS \
-       CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: List Available Schemes
+        run: xcodebuild -list
+
+      - name: Build IPA
+        run: |
+          xcodebuild clean build \
+            -workspace Code.xcworkspace \
+            -scheme "Code" \
+            -destination generic/platform=iOS \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
