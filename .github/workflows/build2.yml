@@ -37,7 +37,7 @@ jobs:
           xcodebuild clean build \
             -project Code.xcodeproj \
             -scheme "Code App" \
-            -sdk iphoneos \  # ✅ إجبار Xcode على بناء إصدار iOS
+            -sdk iphoneos \ # ✅ تم تصحيح الفراغ الزائد
             -destination generic/platform=iOS \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO DEVELOPMENT_TEAM="" \
